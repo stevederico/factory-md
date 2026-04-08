@@ -56,6 +56,8 @@ The suffix is a framework-specific hint, not a portable contract: the shell dial
 
 A rule prefixed with `!` is **strict**: it must be verified by deterministic code. If the framework does not recognize the rule, the pipeline fails — the rule is never trusted to the agent alone.
 
+`!` is a contract with the **consuming framework**, not a badge describing how the originating organization enforces the rule internally. Only mark a rule strict if the framework running the factory.md can verify it with a deterministic check — a shell one-liner, a file-existence test, an `eslint`/`tsc`/`prettier` invocation the framework actually runs, or a `` `check:` `` suffix. Do not mark a rule strict just because the authoring team gates it in their own CI; if the consumer has no way to run that gate, leave the bullet plain and it will be forwarded to the agent.
+
 ```markdown
 ## security
 - ! No hardcoded credentials

@@ -2,6 +2,7 @@
 
 1.1.0
   Optional inline check suffix
+  Tighten strict rule definition
   Vercel example factory
   Stripe example factory
 
