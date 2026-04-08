@@ -41,6 +41,17 @@ Frameworks read each bullet and decide what to do with it:
 
 The spec does not prescribe which bullets must be gates vs hints vs forwarded. Authors write rules in plain English; frameworks do the best they can and forward the rest.
 
+### Optional inline check (`check:` suffix)
+
+A bullet may carry its own verification command in a trailing backtick block prefixed with `check:`. A framework that understands the suffix runs the command and uses its exit code (0 = pass, non-zero = fail). Frameworks that do not understand it ignore the suffix and fall back to keyword matching or agent forwarding.
+
+```markdown
+- ! No console.* in committed code `check: ! git diff $BASE_BRANCH...$BRANCH | grep -qE '^\+.*console\.'`
+- ! Prettier clean `check: pnpm prettier --check .`
+```
+
+The suffix is a framework-specific hint, not a portable contract: the shell dialect, available commands, and exported environment variables are defined by the framework running the check. Authors should only add a `check:` suffix when they know which framework will consume it.
+
 ## Strict rules (`!` prefix)
 
 A rule prefixed with `!` is **strict**: it must be verified by deterministic code. If the framework does not recognize the rule, the pipeline fails — the rule is never trusted to the agent alone.
