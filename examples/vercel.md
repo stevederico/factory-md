@@ -14,11 +14,11 @@ framework_min_version: 1
 
 Rules for an autonomous agent to ship code in a Vercel-style repo. Derived entirely from public Vercel and `rauchg` sources. Where `vercel/next.js` and `vercel/style-guide` disagree, `vercel/next.js` wins for production conventions (semicolons, default exports on page files) and `vercel/style-guide` wins for library code. Rules prefixed with `!` are strict.
 
-**v2 — whole-factory.** The `## stages` section declares the pipeline and maps the 8 gate categories to lifecycle stages. `## triage` and `## spec` are **executable prompts** the agent runs; the eight category sections carry the `!`+`check:` rules the framework enforces at each stage.
+**v2 — whole-factory.** The `## stages` section declares the pipeline and maps the 8 gate categories to lifecycle stages. `## triage` and `## plan` are **executable prompts** the agent runs; the eight category sections carry the `!`+`check:` rules the framework enforces at each stage.
 
 ## stages
 - triage: prompt
-- spec: prompt
+- plan: prompt
 - build: style, build, environment
 - check: testing, quality, documentation, security
 - ship: security, documentation
@@ -28,15 +28,15 @@ Rules for an autonomous agent to ship code in a Vercel-style repo. Derived entir
 
 > stage: triage — executable prompt. The agent runs this to route an incoming idea.
 
-Classify the idea, then emit exactly one line: `route: build` or `route: spec` + a one-sentence reason.
+Classify the idea, then emit exactly one line: `route: build` or `route: plan` + a one-sentence reason.
 
 - **`route: build`** — simple and unambiguous: typo, copy, config, single-file change, no new API or dependency.
-- **`route: spec`** — complex or ambiguous: new surface area, touches >1 subsystem, schema/API/behavior change, or any new dependency.
-- When in doubt, `route: spec`. Steering a plan is cheaper than steering a diff.
+- **`route: plan`** — complex or ambiguous: new surface area, touches >1 subsystem, schema/API/behavior change, or any new dependency.
+- When in doubt, `route: plan`. Steering a plan is cheaper than steering a diff.
 
-## spec
+## plan
 
-> stage: spec — executable prompt. The agent fills this template into `spec.md`; a human approves it before Build.
+> stage: plan — executable prompt. The agent fills this template into `plan.md`; a human approves it before Build.
 
 ```
 # <title>
@@ -54,7 +54,7 @@ Files/functions to touch, with paths. Any new dependency (must clear the `build`
 Checks that prove it works — each a command or an observable behavior.
 ```
 
-- The spec must be buildable from itself — if an engineer couldn't implement from it, it isn't done (Vercel "Production Checklist" discipline).
+- The plan must be buildable from itself — if an engineer couldn't implement from it, it isn't done (Vercel "Production Checklist" discipline).
 - Prefer acceptance items that reuse existing `check`-stage rules; don't reinvent a gate that already exists.
 
 ## style

@@ -81,15 +81,15 @@ Three new reserved sections:
 |---|---|---|
 | `## stages` | declaration | Ordered pipeline; maps each stage to the gate categories that run in it |
 | `## triage` | prompt | Freeform prompt: classify an incoming task and route it |
-| `## spec` | prompt | Freeform prompt/template the agent fills before building |
+| `## plan` | prompt | Freeform prompt/template the agent fills before building |
 
-`## triage` and `## spec` are **prompt sections** — freeform markdown the framework runs as an agent prompt, *not* bullet-list gates. The 8 gate sections are unchanged.
+`## triage` and `## plan` are **prompt sections** — freeform markdown the framework runs as an agent prompt, *not* bullet-list gates. The 8 gate sections are unchanged.
 
 ### `## stages`
 
 One bullet per stage, in execution order — `- <stage>: <value>`:
 
-- `<value>` = `prompt` → run the executable prompt in the like-named section (`## triage`, `## spec`).
+- `<value>` = `prompt` → run the executable prompt in the like-named section (`## triage`, `## plan`).
 - `<value>` = a comma-list of gate-category names → run those categories' rules as gates at this stage.
 
 A category may appear in more than one stage; its gates run at each (e.g. `security` gates both `check` and `ship`). Stages execute top to bottom.
@@ -97,20 +97,20 @@ A category may appear in more than one stage; its gates run at each (e.g. `secur
 ```markdown
 ## stages
 - triage: prompt
-- spec: prompt
+- plan: prompt
 - build: style, build, environment
 - check: testing, quality, documentation, security
 - ship: security, documentation
 - monitor: observability
 
 ## triage
-Classify the task, then emit one line — `route: build` or `route: spec` — plus a one-sentence reason.
+Classify the task, then emit one line — `route: build` or `route: plan` — plus a one-sentence reason.
 - route: build — simple, unambiguous, single-file, no new dependency.
-- route: spec — new surface, >1 subsystem, schema/behavior change, or any new dependency.
-When in doubt, route: spec.
+- route: plan — new surface, >1 subsystem, schema/behavior change, or any new dependency.
+When in doubt, route: plan.
 
-## spec
-Fill this template into spec.md; a human approves it before build.
+## plan
+Fill this template into plan.md; a human approves it before build.
 - Intent (product): what changes for the user, and the invariant that must hold after.
 - Out of scope: what this explicitly does not do.
 - Targets (tech): files/functions to touch, with paths; any new dependency.
@@ -199,15 +199,15 @@ Rules prefixed with `!` are strict: the framework must verify them deterministic
 
 ## Parsing rules
 
-1. Section headings are matched case-insensitively against the reserved names (8 gate sections + the v2 `stages`, `triage`, `spec` sections).
+1. Section headings are matched case-insensitively against the reserved names (8 gate sections + the v2 `stages`, `triage`, `plan` sections).
 2. Bullets can use `-`, `*`, or `+` markers.
 3. A leading `!` (before or after whitespace) marks a bullet as strict.
 4. Unknown sections are preserved and ignored.
 5. YAML frontmatter is allowed for metadata: `name`, `version`, `framework_min_version`.
 6. Anything before the first H2 is preamble.
 7. **(v2)** `## stages` bullets are `name: value`, where `value` is `prompt` or a comma-list of gate-category names. Stages execute top to bottom; a category may repeat across stages.
-8. **(v2)** `## triage` and `## spec` are prompt sections — their freeform body is run as an agent prompt, not parsed as gates.
+8. **(v2)** `## triage` and `## plan` are prompt sections — their freeform body is run as an agent prompt, not parsed as gates.
 
 ## Spec versioning
 
-This document describes `factory.md` **v2**. Versions are backward-compatible at the section level: existing reserved names never change meaning, and new reserved sections are always optional. **v2** added the stage layer (`## stages`, `## triage`, `## spec`); a v1 file remains valid and runs unchanged under a v2 framework.
+This document describes `factory.md` **v2**. Versions are backward-compatible at the section level: existing reserved names never change meaning, and new reserved sections are always optional. **v2** added the stage layer (`## stages`, `## triage`, `## plan`); a v1 file remains valid and runs unchanged under a v2 framework.
