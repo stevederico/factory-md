@@ -1,6 +1,6 @@
 # factory.md specification
 
-**Version 1**
+**Version 2**
 
 `factory.md` is a single markdown file at the root of a repository. It holds the standards an autonomous coding agent must follow to ship code in that repo — coding style, build environment, testing, documentation, dev environment, code quality, observability, and security — all in one place.
 
@@ -70,6 +70,56 @@ Here the first two bullets block the pipeline unless a deterministic check exist
 Use strict prefixes for rules you refuse to trust a model on — security gates, correctness invariants, release-critical checks. Leave rules plain when natural-language enforcement by the agent is acceptable.
 
 The `!` is stripped before matching, so `! No eval` and `No eval` hit the same check implementation. Only the dispatch behavior on the unrecognized path differs.
+
+## Stages (v2)
+
+v1 declares *rules*, grouped into the 8 gate categories above. It does not say *when* in the lifecycle each runs — the consuming framework decides. **v2 adds an optional stage layer** so a `factory.md` can declare the pipeline itself. It is fully backward-compatible: a v1 file (no stage sections) behaves exactly as before.
+
+Three new reserved sections:
+
+| Section | Kind | Purpose |
+|---|---|---|
+| `## stages` | declaration | Ordered pipeline; maps each stage to the gate categories that run in it |
+| `## triage` | prompt | Freeform prompt: classify an incoming task and route it |
+| `## spec` | prompt | Freeform prompt/template the agent fills before building |
+
+`## triage` and `## spec` are **prompt sections** — freeform markdown the framework runs as an agent prompt, *not* bullet-list gates. The 8 gate sections are unchanged.
+
+### `## stages`
+
+One bullet per stage, in execution order — `- <stage>: <value>`:
+
+- `<value>` = `prompt` → run the executable prompt in the like-named section (`## triage`, `## spec`).
+- `<value>` = a comma-list of gate-category names → run those categories' rules as gates at this stage.
+
+A category may appear in more than one stage; its gates run at each (e.g. `security` gates both `check` and `ship`). Stages execute top to bottom.
+
+```markdown
+## stages
+- triage: prompt
+- spec: prompt
+- build: style, build, environment
+- check: testing, quality, documentation, security
+- ship: security, documentation
+- monitor: observability
+
+## triage
+Classify the task, then emit one line — `route: build` or `route: spec` — plus a one-sentence reason.
+- route: build — simple, unambiguous, single-file, no new dependency.
+- route: spec — new surface, >1 subsystem, schema/behavior change, or any new dependency.
+When in doubt, route: spec.
+
+## spec
+Fill this template into spec.md; a human approves it before build.
+- Intent (product): what changes for the user, and the invariant that must hold after.
+- Out of scope: what this explicitly does not do.
+- Targets (tech): files/functions to touch, with paths; any new dependency.
+- Acceptance: checks that prove it works — each a command or an observable behavior.
+```
+
+### Backward compatibility
+
+`## stages` is optional. A framework that doesn't understand it — or a `factory.md` without it — falls back to v1 behavior: run every recognized gate in one pass. No existing `factory.md` breaks.
 
 ## Minimal example
 
@@ -149,13 +199,15 @@ Rules prefixed with `!` are strict: the framework must verify them deterministic
 
 ## Parsing rules
 
-1. Section headings are matched case-insensitively against the 8 reserved names.
+1. Section headings are matched case-insensitively against the reserved names (8 gate sections + the v2 `stages`, `triage`, `spec` sections).
 2. Bullets can use `-`, `*`, or `+` markers.
 3. A leading `!` (before or after whitespace) marks a bullet as strict.
 4. Unknown sections are preserved and ignored.
 5. YAML frontmatter is allowed for metadata: `name`, `version`, `framework_min_version`.
 6. Anything before the first H2 is preamble.
+7. **(v2)** `## stages` bullets are `name: value`, where `value` is `prompt` or a comma-list of gate-category names. Stages execute top to bottom; a category may repeat across stages.
+8. **(v2)** `## triage` and `## spec` are prompt sections — their freeform body is run as an agent prompt, not parsed as gates.
 
 ## Spec versioning
 
-This document describes `factory.md` **v1**. Future versions are backward-compatible at the section level: existing reserved names will not change meaning. New reserved sections may be added in later versions.
+This document describes `factory.md` **v2**. Versions are backward-compatible at the section level: existing reserved names never change meaning, and new reserved sections are always optional. **v2** added the stage layer (`## stages`, `## triage`, `## spec`); a v1 file remains valid and runs unchanged under a v2 framework.

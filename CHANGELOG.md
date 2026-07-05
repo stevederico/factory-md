@@ -1,5 +1,11 @@
 # Changelog
 
+1.2.0
+  Stage layer (spec v2)
+  New reserved sections: stages, triage, spec
+  Declarative pipeline maps gate categories to stages
+  Backward compatible: v1 factories run unchanged
+
 1.1.0
   Optional inline check suffix
   Tighten strict rule definition
