@@ -143,11 +143,11 @@ Fill this template into plan.md; a human approves it before build.
 
 ````markdown
 ---
-name: shipyard
+name: detroit
 version: 1
 ---
 
-# shipyard factory
+# detroit factory
 
 Rules prefixed with `!` are strict: the framework must verify them deterministically or the pipeline fails.
 

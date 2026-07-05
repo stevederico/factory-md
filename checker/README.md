@@ -17,4 +17,4 @@ Flags: `--repo <dir>` (default cwd), `--base <branch>` (default main/master),
 
 Exit code = number of failing rules. It runs only rules with a `check:` suffix;
 plain-language rules are left for an agent-driven framework like
-[Shipyard](https://github.com/stevederico/shipyard).
+[Detroit](https://github.com/stevederico/detroit).

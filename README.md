@@ -32,7 +32,7 @@ Both use the v2 stage layer; see **[docs/workflow.md](docs/workflow.md)** for th
 
 ## Implementations
 
-- **[Shipyard](https://github.com/stevederico/shipyard)** — reference implementation. `factory.sh` reads `factory.md` from the repo root, injects every section into the agent prompt as rules, and dispatches bullets against a built-in check library.
+- **[Detroit](https://github.com/stevederico/detroit)** — reference implementation. `factory.sh` reads `factory.md` from the repo root, injects every section into the agent prompt as rules, and dispatches bullets against a built-in check library.
 - **[checker/](checker/)** — minimal zero-dependency checker. Runs the strict (`!`) rules' `check:` commands, with `--stage` filtering. The deterministic slice of the spec.
 - *(your framework here — PRs welcome)*
 
