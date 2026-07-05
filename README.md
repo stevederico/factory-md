@@ -21,9 +21,19 @@ Clone a factory, run it anywhere.
 
 The canonical spec lives in **[factory.md](factory.md)**.
 
+## Examples
+
+Full, source-cited factory files derived entirely from public material:
+
+- **[examples/stripe.md](examples/stripe.md)** — Stripe-style repo
+- **[examples/vercel.md](examples/vercel.md)** — Vercel-style repo
+
+Both use the v2 stage layer; see **[docs/workflow.md](docs/workflow.md)** for the pipeline.
+
 ## Implementations
 
 - **[Shipyard](https://github.com/stevederico/shipyard)** — reference implementation. `factory.sh` reads `factory.md` from the repo root, injects every section into the agent prompt as rules, and dispatches bullets against a built-in check library.
+- **[checker/](checker/)** — minimal zero-dependency checker. Runs the strict (`!`) rules' `check:` commands, with `--stage` filtering. The deterministic slice of the spec.
 - *(your framework here — PRs welcome)*
 
 ## Contributing

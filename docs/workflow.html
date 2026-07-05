@@ -1,0 +1,183 @@
+<title>factory.md — workflow</title>
+<style>
+  :root {
+    --paper:#eef1f4; --card:#ffffff; --ink:#16191d; --muted:#5c6670; --line:#d3d9df;
+    --wire:#8b97a2; --accent:#f2a900; --accent-ink:#6b4a00; --pass:#1f9d63; --fail:#de5145; --agent:#3a6ea5;
+    --shadow:0 1px 0 rgba(20,25,29,.04),0 8px 26px rgba(20,25,29,.07);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper:#0f1216; --card:#191d23; --ink:#eef1f4; --muted:#93a0ac; --line:#2a3138;
+      --wire:#5c6b78; --accent:#ffbb2e; --accent-ink:#ffd98a; --pass:#35c084; --fail:#ff6a5c; --agent:#6fa8dc;
+      --shadow:0 1px 0 rgba(0,0,0,.4),0 12px 34px rgba(0,0,0,.4);
+    }
+  }
+  :root[data-theme="light"]{--paper:#eef1f4;--card:#fff;--ink:#16191d;--muted:#5c6670;--line:#d3d9df;--wire:#8b97a2;--accent:#f2a900;--accent-ink:#6b4a00;--pass:#1f9d63;--fail:#de5145;--agent:#3a6ea5;--shadow:0 1px 0 rgba(20,25,29,.04),0 8px 26px rgba(20,25,29,.07);}
+  :root[data-theme="dark"]{--paper:#0f1216;--card:#191d23;--ink:#eef1f4;--muted:#93a0ac;--line:#2a3138;--wire:#5c6b78;--accent:#ffbb2e;--accent-ink:#ffd98a;--pass:#35c084;--fail:#ff6a5c;--agent:#6fa8dc;--shadow:0 1px 0 rgba(0,0,0,.4),0 12px 34px rgba(0,0,0,.4);}
+
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--paper); color:var(--ink);
+    font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif; -webkit-font-smoothing:antialiased; }
+  .wrap { max-width:1080px; margin:0 auto; padding:40px 22px 56px; }
+  .mono { font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; }
+
+  header { margin-bottom:20px; }
+  .kicker { font:600 12px/1 ui-monospace,monospace; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--accent-ink); background:var(--accent); display:inline-block; padding:6px 10px; border-radius:6px; }
+  h1 { font-size:clamp(26px,4.5vw,38px); line-height:1.06; margin:15px 0 6px; letter-spacing:-.02em; }
+  .sub { color:var(--muted); font-size:17px; margin:0; max-width:64ch; }
+
+  .legend { display:flex; flex-wrap:wrap; gap:16px; margin:18px 0 8px; font-size:13px; color:var(--muted); }
+  .legend b { color:var(--ink); font-weight:600; }
+  .sw { display:inline-block; width:13px; height:13px; border-radius:3px; vertical-align:-1px; margin-right:6px; }
+  .sw.agent{ background:var(--agent);} .sw.human{ background:var(--accent);} .sw.dec{ background:transparent; border:2px solid var(--agent); transform:rotate(45deg); border-radius:2px; }
+
+  .chart { background:var(--card); border:1px solid var(--line); border-radius:16px; box-shadow:var(--shadow);
+    padding:12px; margin-top:14px; overflow-x:auto; }
+  svg { width:100%; min-width:660px; height:auto; display:block; }
+
+  /* svg element styling via tokens */
+  .box { fill:var(--card); stroke:var(--line); stroke-width:1.5; }
+  .box.dec { stroke:var(--agent); stroke-width:2; }
+  .bar-agent{ fill:var(--agent);} .bar-human{ fill:var(--accent);} .bar-idea{ fill:var(--muted);}
+  .t-title{ fill:var(--ink); font:700 19px/1 system-ui,sans-serif; }
+  .t-sub{ fill:var(--muted); font:400 13px/1 ui-monospace,monospace; }
+  .t-dia{ fill:var(--ink); font:700 17px/1 system-ui,sans-serif; }
+  .t-dia-s{ fill:var(--muted); font:400 12.5px/1 system-ui,sans-serif; }
+  .badge-c{ fill:var(--paper); stroke:var(--wire); stroke-width:1.5; }
+  .badge-t{ fill:var(--muted); font:700 12px/1 ui-monospace,monospace; }
+  .gate-k{ fill:var(--accent-ink); font:700 10px/1 ui-monospace,monospace; letter-spacing:.12em; }
+  .gate-t{ fill:var(--ink); font:600 14px/1 system-ui,sans-serif; }
+  .panel-k{ fill:var(--agent); font:700 10.5px/1 ui-monospace,monospace; letter-spacing:.14em; }
+  .panel-t{ fill:var(--ink); font:500 13.5px/1 ui-monospace,monospace; }
+  .panel-note{ fill:var(--fail); font:600 11.5px/1 system-ui,sans-serif; }
+  .wire{ stroke:var(--wire); stroke-width:2; fill:none; }
+  .wire.dash{ stroke-dasharray:5 5; }
+  .wire.pass{ stroke:var(--pass);} .wire.fail{ stroke:var(--fail);}
+  .lbl{ font:700 12.5px/1 ui-monospace,monospace; }
+  .lbl.pass{ fill:var(--pass);} .lbl.fail{ fill:var(--fail);} .lbl.mut{ fill:var(--muted); font-weight:600; }
+  .mk-wire{ fill:var(--wire);} .mk-pass{ fill:var(--pass);} .mk-fail{ fill:var(--fail);}
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="kicker">factory.md · workflow</span>
+    <h1>Idea in, pull request out</h1>
+    <p class="sub">The automated path. Agents run every step; humans touch only two gates — approve the spec, merge the PR.</p>
+  </header>
+
+  <div class="legend">
+    <span><span class="sw agent"></span><b>Agent</b> step</span>
+    <span><span class="sw human"></span><b>Human</b> gate</span>
+    <span><span class="sw dec"></span><b>Decision</b></span>
+    <span class="mono" style="color:var(--pass)">━ pass</span>
+    <span class="mono" style="color:var(--fail)">━ fail loop</span>
+  </div>
+
+  <div class="chart">
+  <svg viewBox="0 0 1000 1035" role="img" aria-label="factory.md workflow flowchart">
+    <defs>
+      <marker id="mk-wire" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mk-wire"/></marker>
+      <marker id="mk-pass" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mk-pass"/></marker>
+      <marker id="mk-fail" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="mk-fail"/></marker>
+    </defs>
+
+    <!-- ===== connectors (drawn first, under boxes) ===== -->
+    <!-- spine -->
+    <path class="wire" d="M500,120 L500,200" marker-end="url(#mk-wire)"/>
+    <path class="wire" d="M500,284 L500,380" marker-end="url(#mk-wire)"/>
+    <path class="wire" d="M500,464 L500,518" marker-end="url(#mk-wire)"/>
+    <path class="wire pass" d="M500,642 L500,730" marker-end="url(#mk-pass)"/>
+    <path class="wire" d="M500,814 L500,900" marker-end="url(#mk-wire)"/>
+
+    <!-- fail loop: check(left) -> up -> into build(left) -->
+    <path class="wire fail" d="M408,580 L250,580 L250,422 L380,422" marker-end="url(#mk-fail)"/>
+    <!-- feedback: monitor(left) -> far left -> into idea(left) -->
+    <path class="wire dash" d="M380,942 L120,942 L120,80 L380,80" marker-end="url(#mk-wire)"/>
+
+    <!-- human gate connectors -->
+    <path class="wire" d="M620,242 L700,242" marker-end="url(#mk-wire)"/>
+    <path class="wire" d="M620,772 L700,772" marker-end="url(#mk-wire)"/>
+    <!-- rulebook connector -->
+    <path class="wire" d="M592,580 L700,580" marker-end="url(#mk-wire)"/>
+
+    <!-- edge labels -->
+    <text class="lbl pass" x="510" y="694">pass ✓</text>
+    <text class="lbl fail" x="258" y="404">✗ fail — fix &amp; re-run</text>
+    <text class="lbl mut" x="132" y="512" transform="rotate(-90 132 512)">regression / new need</text>
+
+    <!-- ===== nodes ===== -->
+    <!-- 1 IDEA -->
+    <g>
+      <rect class="box" x="380" y="40" width="240" height="80" rx="12"/>
+      <rect class="bar-idea" x="380" y="40" width="6" height="80" rx="3"/>
+      <circle class="badge-c" cx="408" cy="66" r="12"/><text class="badge-t" x="408" y="70" text-anchor="middle">1</text>
+      <text class="t-title" x="430" y="72">Idea</text>
+      <text class="t-sub" x="430" y="98">a change worth making</text>
+    </g>
+    <!-- 2 SPEC -->
+    <g>
+      <rect class="box" x="380" y="200" width="240" height="84" rx="12"/>
+      <rect class="bar-agent" x="380" y="200" width="6" height="84" rx="3"/>
+      <circle class="badge-c" cx="408" cy="228" r="12"/><text class="badge-t" x="408" y="232" text-anchor="middle">2</text>
+      <text class="t-title" x="430" y="234">Spec</text>
+      <text class="t-sub" x="430" y="260">factory spec "…" → spec.md</text>
+    </g>
+    <!-- 3 BUILD -->
+    <g>
+      <rect class="box" x="380" y="380" width="240" height="84" rx="12"/>
+      <rect class="bar-agent" x="380" y="380" width="6" height="84" rx="3"/>
+      <circle class="badge-c" cx="408" cy="408" r="12"/><text class="badge-t" x="408" y="412" text-anchor="middle">3</text>
+      <text class="t-title" x="430" y="414">Build</text>
+      <text class="t-sub" x="430" y="440">factory run → agent writes diff</text>
+    </g>
+    <!-- 4 CHECK (decision diamond) -->
+    <g>
+      <polygon class="box dec" points="500,518 592,580 500,642 408,580"/>
+      <text class="t-dia" x="500" y="576" text-anchor="middle">CHECK</text>
+      <text class="t-dia-s" x="500" y="596" text-anchor="middle">rules pass?</text>
+    </g>
+    <!-- 5 SHIP -->
+    <g>
+      <rect class="box" x="380" y="730" width="240" height="84" rx="12"/>
+      <rect class="bar-agent" x="380" y="730" width="6" height="84" rx="3"/>
+      <circle class="badge-c" cx="408" cy="758" r="12"/><text class="badge-t" x="408" y="762" text-anchor="middle">5</text>
+      <text class="t-title" x="430" y="764">Ship</text>
+      <text class="t-sub" x="430" y="790">commit · push · open PR</text>
+    </g>
+    <!-- 6 MONITOR -->
+    <g>
+      <rect class="box" x="380" y="900" width="240" height="84" rx="12"/>
+      <rect class="bar-agent" x="380" y="900" width="6" height="84" rx="3"/>
+      <circle class="badge-c" cx="408" cy="928" r="12"/><text class="badge-t" x="408" y="932" text-anchor="middle">6</text>
+      <text class="t-title" x="430" y="934">Monitor</text>
+      <text class="t-sub" x="430" y="960">live: crashes? usage?</text>
+    </g>
+
+    <!-- human gate: approve -->
+    <g>
+      <rect class="box" x="700" y="210" width="256" height="64" rx="12" style="stroke:var(--accent)"/>
+      <rect class="bar-human" x="700" y="210" width="6" height="64" rx="3"/>
+      <text class="gate-k" x="726" y="236">HUMAN GATE</text>
+      <text class="gate-t" x="726" y="256">Approve the spec</text>
+    </g>
+    <!-- human gate: merge -->
+    <g>
+      <rect class="box" x="700" y="740" width="256" height="64" rx="12" style="stroke:var(--accent)"/>
+      <rect class="bar-human" x="700" y="740" width="6" height="64" rx="3"/>
+      <text class="gate-k" x="726" y="766">HUMAN GATE</text>
+      <text class="gate-t" x="726" y="786">Review &amp; merge PR</text>
+    </g>
+    <!-- rulebook panel -->
+    <g>
+      <rect class="box" x="700" y="512" width="280" height="136" rx="12"/>
+      <rect class="bar-agent" x="700" y="512" width="6" height="136" rx="3"/>
+      <text class="panel-k" x="724" y="540">CHECK ENFORCES · factory.md</text>
+      <text class="panel-t" x="724" y="566">style · build · testing</text>
+      <text class="panel-t" x="724" y="590">documentation · environment</text>
+      <text class="panel-t" x="724" y="614">quality · security</text>
+      <text class="panel-note" x="724" y="638">security also gates Ship →</text>
+    </g>
+  </svg>
+  </div>
+</div>

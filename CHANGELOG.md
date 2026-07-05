@@ -1,5 +1,10 @@
 # Changelog
 
+1.3.0
+  Example factories: stripe, vercel
+  Reference checker (checker/)
+  Workflow docs
+
 1.2.0
   Stage layer (spec v2)
   New reserved sections: stages, triage, spec
