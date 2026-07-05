@@ -22,7 +22,7 @@ Rules for an autonomous agent to ship code in a Stripe-style repo. Derived entir
 - triage: prompt
 - plan: prompt
 - build: style, build, environment
-- check: testing, quality, documentation, security
+- test: testing, quality, documentation, security
 - ship: security, documentation
 - monitor: observability
 
@@ -57,7 +57,7 @@ Deterministic checks that prove it works — each a command or an observable, sc
 ```
 
 - The plan must be buildable from itself; error and edge behavior are part of Intent, not an afterthought (Michelle Bu: actionable errors).
-- Prefer acceptance items that reuse existing `check`-stage rules; don't reinvent a gate that already exists.
+- Prefer acceptance items that reuse existing `test`-stage rules; don't reinvent a gate that already exists.
 
 ## style
 

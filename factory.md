@@ -92,14 +92,14 @@ One bullet per stage, in execution order — `- <stage>: <value>`:
 - `<value>` = `prompt` → run the executable prompt in the like-named section (`## triage`, `## plan`).
 - `<value>` = a comma-list of gate-category names → run those categories' rules as gates at this stage.
 
-A category may appear in more than one stage; its gates run at each (e.g. `security` gates both `check` and `ship`). Stages execute top to bottom.
+A category may appear in more than one stage; its gates run at each (e.g. `security` gates both `test` and `ship`). Stages execute top to bottom.
 
 ```markdown
 ## stages
 - triage: prompt
 - plan: prompt
 - build: style, build, environment
-- check: testing, quality, documentation, security
+- test: testing, quality, documentation, security
 - ship: security, documentation
 - monitor: observability
 

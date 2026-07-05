@@ -13,7 +13,7 @@
 
 `factory.md` is a single markdown file that holds every standard an autonomous coding agent must follow to ship code in a repo — coding style, build environment, testing, documentation, dev environment, code quality, observability, and security — in 8 named sections.
 
-**v2** adds an optional stage layer (`## stages`, `## triage`, `## plan`) so one file can declare the whole pipeline — triage → plan → build → check → ship → monitor — not just the rules. Backward-compatible: v1 files run unchanged.
+**v2** adds an optional stage layer (`## stages`, `## triage`, `## plan`) so one file can declare the whole pipeline — triage → plan → build → test → ship → monitor — not just the rules. Backward-compatible: v1 files run unchanged.
 
 Clone a factory, run it anywhere.
 
