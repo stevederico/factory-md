@@ -1,5 +1,9 @@
 # Changelog
 
+1.6.0
+  Point reference implementation at detroit
+  Renamed from shipyard
+
 1.5.0
   Rename check stage to test
   Stage mapping and docs updated
