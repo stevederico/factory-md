@@ -1,5 +1,10 @@
 # Changelog
 
+1.4.0
+  Rename spec stage to plan
+  Stage, section, and route token
+  Examples and docs updated
+
 1.3.0
   Example factories: stripe, vercel
   Reference checker (checker/)

@@ -16,11 +16,11 @@ framework_min_version: 1
 
 Rules for an autonomous agent to ship code in a Stripe-style repo. Derived entirely from public Stripe, Stripe-engineer, and Brandur Leach sources. Rules prefixed with `!` are strict.
 
-**v2 — whole-factory.** The `## stages` section declares the pipeline and maps the 8 gate categories to lifecycle stages. `## triage` and `## spec` are **executable prompts** the agent runs; the eight category sections carry the `!`+`check:` rules the framework enforces at each stage.
+**v2 — whole-factory.** The `## stages` section declares the pipeline and maps the 8 gate categories to lifecycle stages. `## triage` and `## plan` are **executable prompts** the agent runs; the eight category sections carry the `!`+`check:` rules the framework enforces at each stage.
 
 ## stages
 - triage: prompt
-- spec: prompt
+- plan: prompt
 - build: style, build, environment
 - check: testing, quality, documentation, security
 - ship: security, documentation
@@ -30,15 +30,15 @@ Rules for an autonomous agent to ship code in a Stripe-style repo. Derived entir
 
 > stage: triage — executable prompt. The agent runs this to route an incoming idea.
 
-Classify the idea, then emit exactly one line: `route: build` or `route: spec` + a one-sentence reason.
+Classify the idea, then emit exactly one line: `route: build` or `route: plan` + a one-sentence reason.
 
 - **`route: build`** — simple and unambiguous: typo, copy, config, single-file change, no new API or dependency.
-- **`route: spec`** — complex or ambiguous: new API surface, touches >1 SDK/service, schema/migration/behavior change, or any new dependency.
-- When in doubt, `route: spec`. Validate the concept against a hypothetical integration guide before building — if no one could build from it, the design is wrong (Payment APIs: First 10 Years).
+- **`route: plan`** — complex or ambiguous: new API surface, touches >1 SDK/service, schema/migration/behavior change, or any new dependency.
+- When in doubt, `route: plan`. Validate the concept against a hypothetical integration guide before building — if no one could build from it, the design is wrong (Payment APIs: First 10 Years).
 
-## spec
+## plan
 
-> stage: spec — executable prompt. The agent fills this template into `spec.md`; a human approves it before Build.
+> stage: plan — executable prompt. The agent fills this template into `plan.md`; a human approves it before Build.
 
 ```
 # <title>
@@ -56,7 +56,7 @@ Files/functions to touch, with paths. Any new dependency (must clear the `build`
 Deterministic checks that prove it works — each a command or an observable, script-generated artifact. Never accept an error response as a success signal.
 ```
 
-- The spec must be buildable from itself; error and edge behavior are part of Intent, not an afterthought (Michelle Bu: actionable errors).
+- The plan must be buildable from itself; error and edge behavior are part of Intent, not an afterthought (Michelle Bu: actionable errors).
 - Prefer acceptance items that reuse existing `check`-stage rules; don't reinvent a gate that already exists.
 
 ## style
