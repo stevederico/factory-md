@@ -37,7 +37,7 @@ Defaults:
   --base    main, else master
   --branch  current HEAD (git rev-parse --abbrev-ref HEAD)
   --stage   run only rules whose category maps to this stage
-            (build|check|ship|monitor — from the frontmatter category_stage map)`);
+            (build|test|ship|monitor — from the frontmatter category_stage map)`);
 }
 
 // Pull `- ! <desc> `check: <cmd>`` rules, tagging each with its `## section`.

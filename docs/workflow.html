@@ -90,7 +90,7 @@
     <path class="wire pass" d="M500,642 L500,730" marker-end="url(#mk-pass)"/>
     <path class="wire" d="M500,814 L500,900" marker-end="url(#mk-wire)"/>
 
-    <!-- fail loop: check(left) -> up -> into build(left) -->
+    <!-- fail loop: test(left) -> up -> into build(left) -->
     <path class="wire fail" d="M408,580 L250,580 L250,422 L380,422" marker-end="url(#mk-fail)"/>
     <!-- feedback: monitor(left) -> far left -> into idea(left) -->
     <path class="wire dash" d="M380,942 L120,942 L120,80 L380,80" marker-end="url(#mk-wire)"/>
@@ -131,10 +131,10 @@
       <text class="t-title" x="430" y="414">Build</text>
       <text class="t-sub" x="430" y="440">factory run → agent writes diff</text>
     </g>
-    <!-- 4 CHECK (decision diamond) -->
+    <!-- 4 TEST (decision diamond) -->
     <g>
       <polygon class="box dec" points="500,518 592,580 500,642 408,580"/>
-      <text class="t-dia" x="500" y="576" text-anchor="middle">CHECK</text>
+      <text class="t-dia" x="500" y="576" text-anchor="middle">TEST</text>
       <text class="t-dia-s" x="500" y="596" text-anchor="middle">rules pass?</text>
     </g>
     <!-- 5 SHIP -->
@@ -172,7 +172,7 @@
     <g>
       <rect class="box" x="700" y="512" width="280" height="136" rx="12"/>
       <rect class="bar-agent" x="700" y="512" width="6" height="136" rx="3"/>
-      <text class="panel-k" x="724" y="540">CHECK ENFORCES · factory.md</text>
+      <text class="panel-k" x="724" y="540">TEST ENFORCES · factory.md</text>
       <text class="panel-t" x="724" y="566">style · build · testing</text>
       <text class="panel-t" x="724" y="590">documentation · environment</text>
       <text class="panel-t" x="724" y="614">quality · security</text>

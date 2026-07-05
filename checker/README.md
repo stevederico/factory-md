@@ -9,11 +9,11 @@ deterministic slice of the spec any framework can reuse.
 node factory.mjs ../examples/vercel.md --repo /path/to/repo
 
 # run only one stage's gates (uses the v2 ## stages section)
-node factory.mjs ../examples/vercel.md --repo /path/to/repo --stage check
+node factory.mjs ../examples/vercel.md --repo /path/to/repo --stage test
 ```
 
 Flags: `--repo <dir>` (default cwd), `--base <branch>` (default main/master),
-`--branch <branch>` (default HEAD), `--stage <build|check|ship|monitor>`.
+`--branch <branch>` (default HEAD), `--stage <build|test|ship|monitor>`.
 
 Exit code = number of failing rules. It runs only rules with a `check:` suffix;
 plain-language rules are left for an agent-driven framework like

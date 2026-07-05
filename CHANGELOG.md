@@ -1,5 +1,10 @@
 # Changelog
 
+1.5.0
+  Rename check stage to test
+  Stage mapping and docs updated
+  check: rule keyword unchanged
+
 1.4.0
   Rename spec stage to plan
   Stage, section, and route token

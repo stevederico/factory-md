@@ -4,7 +4,7 @@ The end-to-end flow that turns an idea into a merged PR. One idea in, one PR out
 Humans touch only two gates: **approve the plan** and **merge the PR**. Everything else is automated.
 
 ```
-IDEA ─► PLAN ─►[human]─► BUILD ─► CHECK ─┬─fail─► BUILD (loop)
+IDEA ─► PLAN ─►[human]─► BUILD ─► TEST ─┬─fail─► BUILD (loop)
                                           └─pass─► SHIP ─►[human]─► MONITOR ─► IDEA
 ```
 
@@ -15,7 +15,7 @@ IDEA ─► PLAN ─►[human]─► BUILD ─► CHECK ─┬─fail─► BUIL
 ```
 factory.md          rules — the house style (style/build/testing/docs/env/quality/security/observability)
 plan.md             the plan for one change (product intent + tech targets)
-checker/factory.mjs     the grader (CHECK). Runs every `!` rule's `check:` command.
+checker/factory.mjs     the grader (TEST). Runs every `!` rule's `check:` command.
 ```
 
 `factory.md` is the constant. `plan.md` is regenerated per idea. The grader never changes between ideas.
@@ -40,7 +40,7 @@ checker/factory.mjs     the grader (CHECK). Runs every `!` rule's `check:` comma
 - **Action:** a coding agent writes a diff on a fresh branch.
 - **Out:** uncommitted changes in the working tree.
 
-### 4. Check  →  `factory run plan.md`  (part 2, automatic)
+### 4. Test  →  `factory run plan.md`  (part 2, automatic)
 - **In:** the working-tree diff + `factory.md`.
 - **Action:** `checker/factory.mjs` parses every `! … check:` rule and runs its shell command against the branch.
 - **Out:** per-rule ✓/✗ and an exit code = number of failures.
@@ -68,8 +68,8 @@ The 8 `##` sections in `factory.md` are **not** stages — they are *what the ga
 
 | section | enforced at |
 |---|---|
-| style, build, testing, documentation, environment, quality | Check |
-| security | Check **and** Ship |
+| style, build, testing, documentation, environment, quality | Test |
+| security | Test **and** Ship |
 | observability | Monitor |
 
 ---
@@ -89,7 +89,7 @@ Everything between them runs unattended.
 | piece | state |
 |---|---|
 | `factory.md` rules | ✅ exist (stripe, vercel) |
-| Check / grader (`checker/factory.mjs`) | ✅ built, passing |
+| Test / grader (`checker/factory.mjs`) | ✅ built, passing |
 | `factory plan` (stage 2) | ⬜ to build |
 | `factory run` build+loop (stages 3–5) | ⬜ to build |
 | Monitor (stage 6) | ⬜ later |
