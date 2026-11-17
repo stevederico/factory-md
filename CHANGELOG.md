@@ -1,5 +1,8 @@
 # Changelog
 
+1.7.0
+  Remove code comments
+
 1.6.0
   Point reference implementation at detroit
   Renamed from shipyard

@@ -1,7 +1,4 @@
 #!/usr/bin/env node
-// factory-md — gate a repo against a factory.md's strict (`!`) rules.
-// Parses `- ! <rule> `check: <shell>`` lines and runs each check.
-// Exit 0 = rule passes; any non-zero = violation. Process exits with #failures.
 
 import { readFileSync } from 'node:fs';
 import { execSync } from 'node:child_process';
@@ -40,8 +37,6 @@ Defaults:
             (build|test|ship|monitor — from the frontmatter category_stage map)`);
 }
 
-// Pull `- ! <desc> `check: <cmd>`` rules, tagging each with its `## section`.
-// Also count strict rules with no check.
 function parseRules(md) {
   const checkable = [];
   let strictNoCheck = 0;
@@ -63,20 +58,18 @@ function parseRules(md) {
   return { checkable, strictNoCheck };
 }
 
-// Parse the v2 `## stages` section into a category → [stages] map.
-// Each bullet is `- <stage>: prompt | <category>, <category>, …`.
 function parseStages(md) {
   const catStage = {};
   const lines = md.split('\n');
   let i = lines.findIndex((l) => /^##\s+stages\s*$/i.test(l));
   if (i === -1) return catStage;
   for (i++; i < lines.length; i++) {
-    if (/^##\s/.test(lines[i])) break; // next section
+    if (/^##\s/.test(lines[i])) break;
     const mm = /^\s*[-*+]\s*([a-z]+)\s*:\s*(.+)$/i.exec(lines[i]);
     if (!mm) continue;
     const stage = mm[1].toLowerCase();
     const val = mm[2].trim();
-    if (val.toLowerCase() === 'prompt') continue; // triage/spec are prompts, not gates
+    if (val.toLowerCase() === 'prompt') continue;
     for (const cat of val.split(',').map((s) => s.trim().toLowerCase()).filter(Boolean)) {
       (catStage[cat] ||= []).push(stage);
     }
@@ -89,7 +82,7 @@ function detectBase(repo) {
     try {
       execSync(`git rev-parse --verify ${b}`, { cwd: repo, stdio: 'ignore' });
       return b;
-    } catch { /* try next */ }
+    } catch {  }
   }
   return 'HEAD';
 }
@@ -119,7 +112,6 @@ function main() {
   const { checkable, strictNoCheck } = parseRules(md);
   const catStage = parseStages(md);
 
-  // Filter to one stage if requested, using each rule's category → stage map.
   let rules = checkable;
   if (args.stage) {
     rules = checkable.filter((r) => (catStage[r.category] || []).includes(args.stage));
